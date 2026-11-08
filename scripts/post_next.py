@@ -75,7 +75,21 @@ def pick_privacy(token):
     return want
 
 
+def normalize_url(url):
+    """Đổi link chia sẻ Google Drive / Dropbox thành link tải trực tiếp."""
+    import re
+    m = re.search(r"drive\.google\.com/file/d/([\w-]+)", url) or re.search(
+        r"drive\.google\.com/open\?id=([\w-]+)", url)
+    if m:
+        return f"https://drive.usercontent.google.com/download?id={m.group(1)}&export=download&confirm=t"
+    if "dropbox.com" in url:
+        url = re.sub(r"[?&]dl=0", "", url)
+        return url + ("&" if "?" in url else "?") + "dl=1"
+    return url
+
+
 def download(url, path):
+    url = normalize_url(url)
     with requests.get(url, stream=True, timeout=120) as r:
         r.raise_for_status()
         with open(path, "wb") as f:
@@ -167,6 +181,11 @@ def main():
         path = os.path.join(tmp, "video.mp4")
         size = download(item["url"], path)
         print(f"Đã tải video {size / 1024 / 1024:.1f} MB")
+        with open(path, "rb") as f:
+            head = f.read(16)
+        if b"ftyp" not in head and b"\x1aE\xdf\xa3" not in head:
+            die("File tải về không phải video (có thể link chưa công khai hoặc là trang web). "
+                "Kiểm tra link đã để chế độ 'Bất kỳ ai có đường liên kết'.")
         publish_id = upload(token, path, size, item.get("caption", ""), privacy)
     wait_status(token, publish_id)
 

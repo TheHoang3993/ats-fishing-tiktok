@@ -9,7 +9,12 @@ Mở `videos.json` trên GitHub, bấm biểu tượng bút chì, thêm một m�
 { "url": "https://link-tai-truc-tiep/video.mp4", "caption": "Tiêu đề #hashtag", "posted": false }
 ```
 
-- `url` phải là **link tải trực tiếp** file .mp4 (mở link ra là tải/chạy video ngay).
+- `url` dùng được các loại link sau:
+  - **Google Drive**: chuột phải file → Chia sẻ → đặt "Bất kỳ ai có đường liên kết" → Sao chép đường liên kết, dán thẳng vào.
+  - **Dropbox**: Chia sẻ → Tạo liên kết, dán thẳng vào.
+  - Link tải trực tiếp file .mp4 từ nơi khác.
+  - Không dùng link YouTube, TikTok hay Facebook (không tải được).
+- Video nên là .mp4 (H.264), dọc 9:16, dưới khoảng 500 MB.
 - Video được đăng theo thứ tự, mục nào `"posted": false` đầu tiên sẽ được đăng.
 
 ## Cài đặt một lần
